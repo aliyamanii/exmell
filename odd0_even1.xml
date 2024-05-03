@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Automata type="DFA">
+    <Alphabets numberOfAlphabets="2">
+        <alphabet letter="0"/>
+        <alphabet letter="1"/>
+    </Alphabets>
+    <States numberOfStates="4">
+        <state name="q0" />
+        <state name="q1" />
+        <state name="q2" />
+        <state name="q3" />
+        <initialState name="q0"/>
+        <FinalStates numberOfFinalStates="1">
+            <finalState name="q3"/>
+        </FinalStates>
+    </States>
+    <Transitions numberOfTrans="8">
+        <transition source="q0" destination="q1" label="1"/>
+        <transition source="q0" destination="q3" label="0"/>
+        <transition source="q1" destination="q0" label="1"/>
+        <transition source="q1" destination="q2" label="0"/>
+        <transition source="q2" destination="q1" label="0"/>
+        <transition source="q2" destination="q3" label="1"/>
+        <transition source="q3" destination="q2" label="1"/>
+        <transition source="q3" destination="q0" label="0"/>
+    </Transitions>
+</Automata>
