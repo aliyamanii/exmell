@@ -2,8 +2,9 @@ import xml.etree.ElementTree as ET
 import tkinter as tk
 from tkinter import filedialog
 
-def load_automaton_from_xml(xml_file):
-    automaton = {}
+# Function to load automata from XML file
+def load_automata_from_xml(xml_file):
+    automata = {}
     tree = ET.parse(xml_file)
     root = tree.getroot()
     
@@ -12,7 +13,7 @@ def load_automaton_from_xml(xml_file):
     for alphabet_tag in root.find('Alphabets'):
         if alphabet_tag.tag == 'alphabet':
             alphabet.append(alphabet_tag.attrib['letter'])
-    automaton['alphabet'] = alphabet
+    automata['alphabet'] = alphabet
     
     # Extracting states
     states = []
@@ -26,9 +27,9 @@ def load_automaton_from_xml(xml_file):
         elif state_tag.tag == 'FinalStates':
             for final_state_tag in state_tag:
                 final_states.append(final_state_tag.attrib['name'])
-    automaton['states'] = states
-    automaton['initial_state'] = initial_state
-    automaton['final_states'] = final_states
+    automata['states'] = states
+    automata['initial_state'] = initial_state
+    automata['final_states'] = final_states
     
     # Extracting transitions
     transitions = {}
@@ -40,73 +41,84 @@ def load_automaton_from_xml(xml_file):
             if source not in transitions:
                 transitions[source] = {}
             transitions[source][label] = destination
-    automaton['transitions'] = transitions
+    automata['transitions'] = transitions
     
-    return automaton
+    return automata
 
-def check_string(automaton, string):
-    current_state = automaton['initial_state']
+# Function to check if a string is accepted by the automata
+def check_string(automata, string):
+    current_state = automata['initial_state']
     for symbol in string:
-        if symbol not in automaton['alphabet']:
+        if symbol not in automata['alphabet']:
             return False
-        if current_state not in automaton['transitions']:
+        if current_state not in automata['transitions']:
             return False
-        if symbol not in automaton['transitions'][current_state]:
+        if symbol not in automata['transitions'][current_state]:
             return False
-        current_state = automaton['transitions'][current_state][symbol]
-    return current_state in automaton['final_states']
+        current_state = automata['transitions'][current_state][symbol]
+    return current_state in automata['final_states']
 
+# Function to select XML file using file dialog
 def select_file():
     filename = filedialog.askopenfilename(filetypes=[("XML files", "*.xml")])
     if filename:
         entry_file.delete(0, tk.END)
         entry_file.insert(0, filename)
 
+# Function to check string and display result
 def check_and_display(event=None):
     filename = entry_file.get()
     if not filename:
         label_result.config(text="Please select an XML file first.", fg="red")
         return
-    automaton = load_automaton_from_xml(filename)
+    automata = load_automata_from_xml(filename)
     string = entry_string.get()
     if string == 'end':
         root.destroy()
         return
-    if check_string(automaton, string):
+    if check_string(automata, string):
         label_result.config(text="String accepted.", fg="green")
     else:
         label_result.config(text="String rejected.", fg="red")
 
+# Create main GUI window
 root = tk.Tk()
 root.title("Exmell")
+root.geometry("450x300")
 
 # Create a frame with border
-frame = tk.Frame(root, relief="solid", borderwidth=1)
-frame.pack(padx=10, pady=10)  # Add padding around the frame
+frame = tk.Frame(root, relief="solid", borderwidth=2, width=300, height=600,bg="#FFD966" )
+frame.pack(padx=10, pady=40)
+root.configure(bg="#FFF2CC")
 
-# Styling
-root.configure(bg="#f0f0f0")
-
-label_file = tk.Label(frame, text="Select XML file:", bg="#f0f0f0")
+# Label for file selection
+label_file = tk.Label(frame, text="Select XML file:", bg="#FFD966", fg="#6C3428", font=("Cooper Black", 12))
 label_file.pack()
 
-entry_file = tk.Entry(frame, bg="white", bd=2, relief="solid")
-entry_file.pack(pady=5)  # Add padding between entry and button
+# Entry field for file path
+entry_file = tk.Entry(frame, bg="#f0f0f0", bd=2, relief="solid", width=30, font=("Times New Roman", 12))
+entry_file.pack(pady=5)
 
-button_browse = tk.Button(frame, text="Browse", command=select_file, bg="#4CAF50", fg="white", bd=0)
+# Button to browse files
+button_browse = tk.Button(frame, text="Browse", command=select_file, bg="#4793AF", fg="#FEFDED", bd=0, font=("Times New Roman", 12))
 button_browse.pack()
 
-label_instruction = tk.Label(frame, text="Enter a string to check (type 'end' to quit):", bg="#f0f0f0")
+# Label for string input instruction
+label_instruction = tk.Label(frame, text="Enter a string to check (type 'end' to quit):", bg="#FFD966", fg="#6C3428", font=("Cooper Black", 12))
 label_instruction.pack()
 
-entry_string = tk.Entry(frame, bg="white", bd=2, relief="solid")
-entry_string.pack(pady=5)  # Add padding between entry and button
-entry_string.bind("<Return>", check_and_display)  # Bind Enter key to check_and_display function
+# Entry field for string input
+entry_string = tk.Entry(frame, bg="white", bd=2, relief="solid", width=30, font=("Arial", 12))
+entry_string.pack(pady=5)
+entry_string.bind("<Return>", check_and_display)
 
-button_check = tk.Button(frame, text="Check", command=check_and_display, bg="#008CBA", fg="white", bd=0)
+# Button to check string
+button_check = tk.Button(frame, text="Check", command=check_and_display, bg="#4793AF", fg="#FEFDED", bd=0, font=("Times New Roman", 12))
 button_check.pack()
 
-label_result = tk.Label(frame, text="", fg="black", bg="#f0f0f0")
+# Label to display result
+label_result = tk.Label(frame, text="", fg="#f0f0f0", bg="#FFD966", font=("Times New Roman", 14, "bold"))
 label_result.pack()
 
+# Start the GUI event loop
 root.mainloop()
