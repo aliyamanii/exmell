@@ -64,6 +64,7 @@ def select_file():
     if filename:
         entry_file.delete(0, tk.END)
         entry_file.insert(0, filename)
+        load_and_check()  # Load and check with the selected file
 
 # Function to check string and display result
 def check_and_display(event=None):
@@ -145,13 +146,7 @@ label_instruction.pack()
 # Entry field for string input
 entry_string = tk.Entry(frame, bg="#FEEFAD", bd=2, relief="solid", width=30, font=("Times New Roman", 12))
 entry_string.pack(padx=40, pady=5)
-entry_string.bind("<Return>", check_and_display)
-
-# Button to check string
-button_check = tk.Button(frame, text="Check", command=check_and_display, bg="#4793AF", fg="#FEFDED", bd=0, cursor="tcross", font=("Times New Roman", 12))
-button_check.pack()
-button_check.bind("<Enter>", on_enter)
-button_check.bind("<Leave>", on_leave)
+entry_string.bind("<KeyRelease>", check_and_display)
 
 # Label to display result
 label_result = tk.Label(frame, text="", fg="#FDDE55", bg="#68D2E8", font=("Times New Roman", 14, "bold"))
