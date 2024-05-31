@@ -64,7 +64,6 @@ def select_file():
     if filename:
         entry_file.delete(0, tk.END)
         entry_file.insert(0, filename)
-        load_and_check()  # Load and check with the selected file
 
 # Function to check string and display result
 def check_and_display(event=None):
